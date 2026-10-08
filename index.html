@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Certificate Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%2318191d'/%3E%3Crect x='7' y='11' width='30' height='23' rx='4' fill='none' stroke='%232dd4bf' stroke-width='3'/%3E%3Cpath d='M13 19h18M13 26h10' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='35' cy='34' r='8' fill='%232dd4bf'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
 
   <!-- Google Fonts Library -->
@@ -14,15 +15,28 @@
   <!-- External JS Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body class="dark-mode">
 
   <header class="glass-nav">
     <div class="logo">
+      <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <defs><linearGradient id="lgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
+        <rect x="4" y="8" width="34" height="26" rx="5" fill="none" stroke="url(#lgG)" stroke-width="3"/>
+        <path d="M11 17h20M11 24h11" stroke="url(#lgG)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M31 38l-2.5 8 6.5-3.5 6.5 3.5L39 38z" fill="#fb7185"/>
+        <circle cx="35" cy="33" r="8.5" fill="url(#lgG)"/>
+        <path d="M31.2 33.2l2.7 2.7 4.8-5.6" fill="none" stroke="#14161a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
       <h2>Certificate Studio</h2>
     </div>
     <div class="nav-actions">
-      <button id="themeToggle" class="glass-btn glow-blue">🌙 Mode Switch</button>
+      <button id="saveBtn" class="glass-btn glow-green" data-tip="Download this design as a .json file">💾<span class="bt"> Save</span></button>
+      <button id="loadBtn" class="glass-btn glow-blue" data-tip="Open a saved design (.json)">📂<span class="bt"> Load</span></button>
+      <button id="newBtn" class="glass-btn glow-red" data-tip="Clear everything and start fresh">🆕<span class="bt"> New</span></button>
+      <input type="file" id="loadInput" accept=".json,application/json" hidden />
+      <button id="themeToggle" class="glass-btn glow-blue">🌙 Dark</button>
     </div>
   </header>
 
@@ -30,13 +44,16 @@
     <!-- Studio Navigation Sidebar -->
     <aside class="sidebar glass-card">
       <h3>Studio Dashboard</h3>
-      <button class="menu-btn active" data-modal="modal-personal">👤 Personal Custom Certificate</button>
-      <button class="menu-btn" data-modal="modal-enterprise">🏢 Enterprise Auto-Batch</button>
-      <button class="menu-btn" data-modal="modal-templates">🖼️ Preset Themes & Borders</button>
-      <button class="menu-btn" data-modal="modal-custom">📷 Custom Template & Overlay</button>
-      <button class="menu-btn" data-modal="modal-fonts">🔤 Section Typography Studio</button>
-      <button class="menu-btn" data-modal="modal-authorities">✍️ Authorities & Signatures</button>
-      <button class="menu-btn" data-modal="modal-downloads">📥 Export Center</button>
+      <button class="menu-btn active" data-modal="modal-personal" data-tip="Edit the recipient, title and description">👤 Personal Custom Certificate</button>
+      <button class="menu-btn" data-modal="modal-enterprise" data-tip="Import names from CSV / Excel and export them all">🏢 Auto-Batch Bulk Certificates</button>
+      <button class="menu-btn" data-modal="modal-templates" data-tip="30 ready-made designs, one click to apply">🖼️ Preset Themes & Borders</button>
+      <button class="menu-btn" data-modal="modal-custom" data-tip="Use your own background image and logo">📷 Custom Template & Overlay</button>
+      <button class="menu-btn" data-modal="modal-fonts" data-tip="Fonts, size, colour and case for any text">🔤 Section Typography Studio</button>
+      <button class="menu-btn" data-modal="modal-authorities" data-tip="Up to 4 signatures with names and designations">✍️ Authorities & Signatures</button>
+      <button class="menu-btn" data-modal="modal-borders" data-tip="15 border line styles with your own colour and thickness">🔲 Border Lines</button>
+      <button class="menu-btn" data-modal="modal-layers" data-tip="Show, hide, lock and reorder every element">📚 Layers</button>
+      <button class="menu-btn" data-modal="modal-badges" data-tip="Medals, rosettes, seals and stamps">🏅 Badges & Seals</button>
+      <button class="menu-btn" data-modal="modal-downloads" data-tip="Download as JPG or PDF">📥 Export Center</button>
     </aside>
 
     <!-- Canvas Preview Stage -->
@@ -44,216 +61,210 @@
       <div class="stage-header">
         <div class="selector-group">
           <label for="previewSelect">Active Recipient:</label>
-          <select id="previewSelect" class="glass-input">
-            <option value="M. S. Dhoni">M. S. Dhoni</option>
-            <option value="Cristiano Ronaldo">Cristiano Ronaldo</option>
-            <option value="Lewis Hamilton">Lewis Hamilton</option>
-          </select>
+          <select id="previewSelect" class="glass-input"></select>
         </div>
-        <div class="view-controls">
-          <span class="edit-hint">💡 Click any element on canvas to edit directly</span>
-          <button id="clearTemplateBtn" class="glass-btn small glow-red">🗑️ Delete Template BG</button>
-          <button id="gridToggle" class="glass-btn small glow-yellow">📐 Toggle Grid</button>
+        <div class="toolbar">
+          <button id="undoBtn" class="tool-btn" data-tip="Undo (Ctrl+Z)" aria-label="Undo">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button id="redoBtn" class="tool-btn flip" data-tip="Redo (Ctrl+Y)" aria-label="Redo">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="sep"></span>
+          <div class="seg small"><button class="seg-btn" data-orient="l" data-tip="Landscape certificate">▭ Landscape</button><button class="seg-btn" data-orient="p" data-tip="A4 portrait certificate">▯ A4</button></div>
+          <button id="alignBtn" class="glass-btn small glow-blue" data-tip="Snap every element back to its original position">🧲 Auto Align</button>
+          <button id="addTextBtn" class="glass-btn small glow-green" data-tip="Add a new text box and type anything">🔤 Text Box</button>
+          <button id="idBtn" class="glass-btn small glow-yellow" data-tip="Show or hide the certificate ID">🔖 Cert ID</button>
+          <button id="clearTemplateBtn" class="glass-btn small glow-red" data-tip="Remove the template background and restore the default">🗑️ Delete Template BG</button>
         </div>
+      </div>
+      <div class="hint-row">
+        <div class="zoombar"><button id="zoomOut" class="tool-btn" aria-label="Zoom out">−</button><span id="zoomLbl">100%</span><button id="zoomIn" class="tool-btn" aria-label="Zoom in">+</button><button id="zoomFit" class="glass-btn small">Fit</button></div>
+      </div>
+      <div id="alignBar" class="alignbar" hidden>
+        <span>Align</span>
+        <button class="chip" data-al="l">⇤ Left</button><button class="chip" data-al="c">↔ Center</button><button class="chip" data-al="r">Right ⇥</button>
+        <button class="chip" data-al="t">⤒ Top</button><button class="chip" data-al="m">↕ Middle</button><button class="chip" data-al="b">Bottom ⤓</button>
+        <button class="chip" data-al="dh">Space ↔</button><button class="chip" data-al="dv">Space ↕</button>
       </div>
 
       <div class="canvas-viewport">
         <canvas id="certCanvas"></canvas>
       </div>
+      <div class="strip-wrap"><div id="stripInfo" class="note"></div><div id="strip" class="strip"></div></div>
     </section>
   </main>
 
+  <!-- Floating panel for the selected element (opens on the right, like Canva) -->
+  <aside id="ctxPanel" class="glass-card ctx">
+    <div class="modal-header">
+      <h3 id="cLabel">Selected</h3>
+      <button id="cClose" class="close-modal" aria-label="Close">&times;</button>
+    </div>
+    <div id="cTextBox" class="field">
+      <label>Text</label>
+      <textarea id="cText" class="glass-input" rows="2"></textarea>
+    </div>
+    <div id="cTypo"></div>
+    <div id="cImgBox" class="field" hidden>
+      <label>Size</label>
+      <input type="range" id="cImgW" min="30" max="600" />
+      <div id="cImgColF" hidden><label>Colour</label><input type="color" id="cImgCol" class="glass-input color-picker" /></div>
+    </div>
+    <div class="button-row">
+      <button id="cReset" class="glass-btn small glow-blue flex-1">🧲 Reset position</button>
+      <button id="cDel" class="glass-btn small glow-red flex-1">🗑️ Remove</button>
+    </div>
+  </aside>
+
   <!-- MODALS SECTION -->
 
-  <!-- 1. Personal Custom Certificate Modal -->
+  <!-- 1. Personal Custom Certificate -->
   <div id="modal-personal" class="glass-modal active">
     <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h3>Personal Individual Certificate Setup</h3>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="field">
-        <label>Recipient Name</label>
-        <input type="text" id="personalNameInput" value="M. S. Dhoni" class="glass-input" />
-      </div>
-      <div class="field">
-        <label>Certificate Header Title</label>
-        <input type="text" id="personalTitleInput" value="CERTIFICATE OF ACHIEVEMENT" class="glass-input" />
-      </div>
-      <div class="field">
-        <label>Presentation Line Text</label>
-        <input type="text" id="personalLeadInput" value="THIS IS PROUDLY PRESENTED TO" class="glass-input" />
-      </div>
-      <div class="field">
-        <label>Course / Event Description</label>
-        <textarea id="personalSubtitleInput" class="glass-input" rows="3">for outstanding performance, leadership, and dedicated service.</textarea>
-      </div>
-      <button id="applyPersonalBtn" class="glass-btn glow-green full-width">🚀 Apply & Render Certificate</button>
+      <div class="modal-header"><h3>Personal Individual Certificate Setup</h3><button class="close-modal">&times;</button></div>
+      <div class="field"><label>Recipient Name</label><input type="text" id="personalNameInput" class="glass-input" /></div>
+      <div class="field"><label>Certificate Header Title</label><input type="text" id="personalTitleInput" class="glass-input" /></div>
+      <div class="field"><label>Presentation Line Text</label><input type="text" id="personalLeadInput" class="glass-input" /></div>
+      <div class="field"><label>Course / Event Description</label><textarea id="personalSubtitleInput" class="glass-input" rows="3"></textarea></div>
+      <button id="applyPersonalBtn" class="glass-btn glow-green full-width">🚀 Apply & Add to Recipients</button>
     </div>
   </div>
 
-  <!-- 2. Enterprise Auto-Batch Modal -->
+  <!-- 2. Auto-Batch Bulk Certificates -->
   <div id="modal-enterprise" class="glass-modal">
     <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h3>Enterprise Auto-Batch Generation</h3>
-        <button class="close-modal">&times;</button>
-      </div>
+      <div class="modal-header"><h3>Auto-Batch Bulk Certificates</h3><button class="close-modal">&times;</button></div>
       <div class="field">
-        <label>Import Recipients List (.csv file)</label>
-        <input type="file" id="csvInput" accept=".csv" class="glass-input" />
+        <label>Import Recipients List (.csv or .xlsx)</label>
+        <input type="file" id="csvInput" accept=".csv,.xlsx,.xls" class="glass-input" />
       </div>
-      <button id="loadCsvBtn" class="glass-btn glow-blue full-width">📥 Parse CSV Data</button>
+      <button id="loadCsvBtn" class="glass-btn glow-blue full-width">📥 Parse Names & Columns</button>
+      <button id="sampleCsvBtn" class="glass-btn small full-width">⬇ Download sample CSV (Name, Course, Date, Rank)</button>
+      <div class="field"><label>Placeholders — click to insert into the selected text</label><div id="colChips" class="chips"></div></div>
+      <p class="note">Every other column in your file becomes a placeholder like {{Course}}, filled differently for each certificate.</p>
       <hr class="divider" />
       <div class="field">
         <label>Batch Auto-Generation</label>
-        <button id="enterpriseBatchDownloadBtn" class="glass-btn glow-green full-width">⚡ Start Auto-Batch Generation (PDF)</button>
+        <button id="enterpriseBatchPdfBtn" class="glass-btn glow-green full-width">⚡ Generate All → One Combined PDF</button>
+        <button id="enterpriseBatchJpgBtn" class="glass-btn glow-yellow full-width">🖼️ Generate All → Separate JPG Files</button>
       </div>
     </div>
   </div>
 
-  <!-- 3. Presets & Border Gallery Modal -->
+  <!-- 3. Presets Gallery -->
   <div id="modal-templates" class="glass-modal">
     <div class="modal-content glass-card large-modal">
-      <div class="modal-header">
-        <h3>Preset Themes & Border Styles</h3>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="field">
-        <label>Select Structural Frame Pattern</label>
-        <select id="borderStyleSelect" class="glass-input">
-          <option value="burgundy_gold">Luxury Gold & Burgundy Waves</option>
-          <option value="navy_modern">Deep Navy Modern Gold Ribbon</option>
-          <option value="classic_ornate">Classic Ornate Engraved Frame</option>
-          <option value="minimal">Minimalist Geometric Corners</option>
-          <option value="ribbon">Bold Side Accent Ribbon</option>
-        </select>
+      <div class="modal-header"><h3>Preset Themes — 30 Landscape + 30 A4 Portrait</h3><button class="close-modal">&times;</button></div>
+      <div class="seg"><button class="seg-btn" data-orient="l">▭ Landscape · 30</button><button class="seg-btn" data-orient="p">▯ A4 Portrait · 30</button></div>
+      <div class="field-row tint">
+        <div class="field"><label>Primary colour</label><input type="color" id="tintP" class="glass-input color-picker" value="#800020" /></div>
+        <div class="field"><label>Accent colour</label><input type="color" id="tintS" class="glass-input color-picker" value="#d4af37" /></div>
+        <button id="tintReset" class="glass-btn small glow-yellow">↺ Reset</button>
       </div>
       <div class="template-grid" id="templateGrid"></div>
-      <div class="button-row" style="margin-top: 15px;">
-        <button id="applyPresetBtn" class="glass-btn glow-green flex-1">🎨 Apply Selected Theme</button>
+      <div class="button-row">
+        <button id="shuffleBtn" class="glass-btn glow-blue flex-1">🎲 Surprise Me</button>
         <button id="removePresetBgBtn" class="glass-btn glow-red flex-1">🗑️ Delete Current Template Background</button>
       </div>
     </div>
   </div>
 
-  <!-- 4. Custom Template & Overlay Uploads -->
+  <!-- 4. Custom Template & Overlay -->
   <div id="modal-custom" class="glass-modal">
     <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h3>Upload Custom Template & Overlay Logo</h3>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="field">
-        <label>Upload Custom Template Background</label>
-        <input type="file" id="templateInput" accept="image/*" class="glass-input" />
-      </div>
+      <div class="modal-header"><h3>Upload Custom Template & Overlay Logo</h3><button class="close-modal">&times;</button></div>
+      <div class="field"><label>Upload Custom Template (landscape or A4 portrait — detected automatically)</label><input type="file" id="templateInput" accept="image/*" class="glass-input" /></div>
       <button id="uploadTemplateBtn" class="glass-btn glow-blue full-width">🖼️ Apply Custom Background</button>
       <hr class="divider" />
-      <div class="field">
-        <label>Upload Custom Logo / Emblem Image</label>
-        <input type="file" id="logoInput" accept="image/*" class="glass-input" />
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Logo Width (px)</label>
-          <input type="number" id="logoWidthInput" value="100" class="glass-input" />
-        </div>
-        <div class="field">
-          <label>Logo Height (px)</label>
-          <input type="number" id="logoHeightInput" value="60" class="glass-input" />
-        </div>
-      </div>
-      <button id="applyLogoBtn" class="glass-btn glow-green full-width">🚀 Upload & Position Logo</button>
+      <div class="field"><label>Add a logo / image</label><input type="file" id="logoInput" accept="image/*" class="glass-input" /></div>
+      <button id="applyLogoBtn" class="glass-btn glow-green full-width">🖼️ Choose Image</button>
+      <p class="note">It appears on the certificate at a good size straight away. Drag the corner handles to make it bigger or smaller, and drag the image to move it.</p>
     </div>
   </div>
 
   <!-- 5. Typography Studio -->
   <div id="modal-fonts" class="glass-modal">
     <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h3>Section Typography Studio</h3>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="field">
-        <label>Target Element to Style</label>
-        <select id="targetSectionSelect" class="glass-input">
-          <option value="title">Certificate Header Title</option>
-          <option value="lead">Lead Subtitle Text</option>
-          <option value="name">Recipient Name</option>
-          <option value="subtitle">Event / Course Description</option>
-          <option value="authName">Authority Names</option>
-          <option value="authDesig">Authority Designations</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Font Family</label>
-        <select id="fontFamilySelect" class="glass-input"></select>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Font Size (px)</label>
-          <input type="number" id="fontSizeInput" value="38" class="glass-input" />
-        </div>
-        <div class="field">
-          <label>Text Color</label>
-          <input type="color" id="textColorInput" value="#800020" class="glass-input color-picker" />
-        </div>
-      </div>
-      <div class="field">
-        <label>Text Case Transformation</label>
-        <div class="btn-group">
-          <button id="caseOriginal" class="glass-btn small active">Normal</button>
-          <button id="caseLower" class="glass-btn small glow-blue">lowercase</button>
-          <button id="caseUpper" class="glass-btn small glow-blue">UPPERCASE</button>
-          <button id="caseTitle" class="glass-btn small glow-green">Title Case</button>
-        </div>
-      </div>
-      <button id="applyTypographyBtn" class="glass-btn glow-green full-width">✨ Apply Typography Changes</button>
+      <div class="modal-header"><h3>Section Typography Studio</h3><button class="close-modal">&times;</button></div>
+      <div class="field"><label>Target Element to Style</label><select id="mTarget" class="glass-input"></select></div>
+      <div id="mTypo"></div>
+      <p class="note">Changes apply live. You can also just click any text on the certificate.</p>
     </div>
   </div>
 
-  <!-- 6. Up to 4 Authorities & Signatures Manager -->
+  <!-- 6. Authorities & Signatures -->
   <div id="modal-authorities" class="glass-modal">
     <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h3>Authorities & Signatures (Up to 4)</h3>
-        <button class="close-modal">&times;</button>
-      </div>
-
-      <div class="button-row" style="margin-bottom: 10px;">
+      <div class="modal-header"><h3>Authorities & Signatures (Up to 4)</h3><button class="close-modal">&times;</button></div>
+      <div class="button-row">
         <button id="addAuthBtn" class="glass-btn glow-green flex-1">➕ Add Authority Slot</button>
         <button id="removeAuthBtn" class="glass-btn glow-red flex-1">➖ Delete Last Authority Slot</button>
       </div>
-
       <div id="authoritiesContainer"></div>
-
-      <button id="applyAuthoritiesBtn" class="glass-btn glow-green full-width" style="margin-top: 10px;">🚀 Update All Signatures & Authorities</button>
+      <button id="applyAuthoritiesBtn" class="glass-btn glow-green full-width">🚀 Update All Signatures & Authorities</button>
     </div>
   </div>
 
-  <!-- 7. Export Center Modal -->
+  <!-- 7. Export Center -->
   <div id="modal-downloads" class="glass-modal">
     <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h3>Export & Download Options</h3>
-        <button class="close-modal">&times;</button>
-      </div>
+      <div class="modal-header"><h3>Export & Download Options</h3><button class="close-modal">&times;</button></div>
       <div class="download-section">
-        <h4>Current Recipient Certificate</h4>
+        <div class="field-row">
+          <div class="field"><label>Image quality</label><select id="qualitySel" class="glass-input"><option value="1">Standard (1000×700)</option><option value="2" selected>HD (2000×1400)</option><option value="3">Print (3000×2100)</option></select></div>
+          <div class="field"><label>PDF page</label><select id="paperSel" class="glass-input"><option value="fit">Fit to design</option><option value="a4">A4 landscape</option></select></div>
+        </div>
+        <h4 style="margin-top:12px">Current Recipient Certificate</h4>
         <div class="button-row">
-          <button id="downloadSinglePngBtn" class="glass-btn glow-blue flex-1">Download PNG</button>
+          <button id="downloadSingleJpgBtn" class="glass-btn glow-blue flex-1">Download JPG</button>
           <button id="downloadSinglePdfBtn" class="glass-btn glow-yellow flex-1">Download PDF</button>
         </div>
       </div>
       <hr class="divider" />
       <div class="download-section">
         <h4>Batch Bulk Downloads</h4>
-        <button id="downloadBatchSeparatePngBtn" class="glass-btn glow-green full-width">Download All as Separate PNG Files</button>
-        <button id="downloadBatchSeparatePdfBtn" class="glass-btn glow-red full-width">Download All as Separate PDF Files</button>
+        <button id="downloadBatchJpgBtn" class="glass-btn glow-green full-width">🖼️ All as Separate JPG Files</button>
+        <button id="downloadBatchPdfBtn" class="glass-btn glow-red full-width">📄 All as Separate PDF Files</button>
+        <button id="downloadBatchCombinedBtn" class="glass-btn glow-yellow full-width">📚 All in ONE Combined PDF</button>
+        <p class="note">Your browser may ask to allow multiple downloads — choose Allow.</p>
       </div>
     </div>
   </div>
+
+  <!-- Layers -->
+  <div id="modal-layers" class="glass-modal">
+    <div class="modal-content glass-card">
+      <div class="modal-header"><h3>Layers</h3><button class="close-modal">&times;</button></div>
+      <p class="note">Top of the list is drawn on top. 👁 hide · 🔒 lock · ▲▼ reorder. Shift-click names to multi-select.</p>
+      <div id="layersList"></div>
+    </div>
+  </div>
+
+  <!-- Badges -->
+  <div id="modal-badges" class="glass-modal">
+    <div class="modal-content glass-card large-modal">
+      <div class="modal-header"><h3>Badges & Seals</h3><button class="close-modal">&times;</button></div>
+      <div class="template-grid" id="badgeGrid"></div>
+    </div>
+  </div>
+
+  <!-- Border lines -->
+  <div id="modal-borders" class="glass-modal">
+    <div class="modal-content glass-card large-modal">
+      <div class="modal-header"><h3>Border Lines</h3><button class="close-modal">&times;</button></div>
+      <div class="field-row tint">
+        <div class="field"><label>Line colour</label><input type="color" id="bdCol" class="glass-input color-picker" value="#800020" /></div>
+        <div class="field"><label>Thickness</label><input type="range" id="bdW" min="1" max="12" value="3" /></div>
+        <button id="bdNone" class="glass-btn small glow-red">✕ None</button>
+      </div>
+      <div class="template-grid" id="borderGrid"></div>
+      <p class="note">Borders sit on top of any template, including ones you upload.</p>
+    </div>
+  </div>
+
+  <div id="hoverTip"></div>
+  <div id="toast" class="glass-card"><span></span><i></i></div>
 
   <script src="script.js"></script>
 </body>
