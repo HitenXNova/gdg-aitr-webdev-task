@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Certificate Studio</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%2318191d'/%3E%3Crect x='7' y='11' width='30' height='23' rx='4' fill='none' stroke='%232dd4bf' stroke-width='3'/%3E%3Cpath d='M13 19h18M13 26h10' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='35' cy='34' r='8' fill='%232dd4bf'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
 
@@ -22,21 +23,20 @@
   <header class="glass-nav">
     <div class="logo">
       <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true">
-        <defs><linearGradient id="lgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
-        <rect x="4" y="8" width="34" height="26" rx="5" fill="none" stroke="url(#lgG)" stroke-width="3"/>
-        <path d="M11 17h20M11 24h11" stroke="url(#lgG)" stroke-width="3" stroke-linecap="round"/>
-        <path d="M31 38l-2.5 8 6.5-3.5 6.5 3.5L39 38z" fill="#fb7185"/>
-        <circle cx="35" cy="33" r="8.5" fill="url(#lgG)"/>
-        <path d="M31.2 33.2l2.7 2.7 4.8-5.6" fill="none" stroke="#14161a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="4" y="8" width="34" height="26" rx="5" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M11 17h20M11 24h11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <path d="M31 38l-2.5 8 6.5-3.5 6.5 3.5L39 38z" fill="currentColor" opacity=".55"/>
+        <circle cx="35" cy="33" r="8.5" fill="currentColor"/>
+        <path d="M31.2 33.2l2.7 2.7 4.8-5.6" fill="none" style="stroke:var(--bg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <h2>Certificate Studio</h2>
     </div>
     <div class="nav-actions">
-      <button id="saveBtn" class="glass-btn glow-green" data-tip="Download this design as a .json file">💾<span class="bt"> Save</span></button>
-      <button id="loadBtn" class="glass-btn glow-blue" data-tip="Open a saved design (.json)">📂<span class="bt"> Load</span></button>
-      <button id="newBtn" class="glass-btn glow-red" data-tip="Clear everything and start fresh">🆕<span class="bt"> New</span></button>
+      <button id="saveBtn" class="glass-btn glow-green" data-tip="Download this design as a .json file"><i class="ph ph-floppy-disk"></i><span class="bt"> Save</span></button>
+      <button id="loadBtn" class="glass-btn glow-blue" data-tip="Open a saved design (.json)"><i class="ph ph-folder-open"></i><span class="bt"> Load</span></button>
+      <button id="newBtn" class="glass-btn glow-red" data-tip="Clear everything and start fresh"><i class="ph ph-file-plus"></i><span class="bt"> New</span></button>
       <input type="file" id="loadInput" accept=".json,application/json" hidden />
-      <button id="themeToggle" class="glass-btn glow-blue">🌙 Dark</button>
+      <button id="themeToggle" class="glass-btn glow-blue"><i class="ph ph-moon"></i> Dark</button>
     </div>
   </header>
 
@@ -44,16 +44,16 @@
     <!-- Studio Navigation Sidebar -->
     <aside class="sidebar glass-card">
       <h3>Studio Dashboard</h3>
-      <button class="menu-btn active" data-modal="modal-personal" data-tip="Edit the recipient, title and description">👤 Personal Custom Certificate</button>
-      <button class="menu-btn" data-modal="modal-enterprise" data-tip="Import names from CSV / Excel and export them all">🏢 Auto-Batch Bulk Certificates</button>
-      <button class="menu-btn" data-modal="modal-templates" data-tip="30 ready-made designs, one click to apply">🖼️ Preset Themes & Borders</button>
-      <button class="menu-btn" data-modal="modal-custom" data-tip="Use your own background image and logo">📷 Custom Template & Overlay</button>
-      <button class="menu-btn" data-modal="modal-fonts" data-tip="Fonts, size, colour and case for any text">🔤 Section Typography Studio</button>
-      <button class="menu-btn" data-modal="modal-authorities" data-tip="Up to 4 signatures with names and designations">✍️ Authorities & Signatures</button>
-      <button class="menu-btn" data-modal="modal-borders" data-tip="15 border line styles with your own colour and thickness">🔲 Border Lines</button>
-      <button class="menu-btn" data-modal="modal-layers" data-tip="Show, hide, lock and reorder every element">📚 Layers</button>
-      <button class="menu-btn" data-modal="modal-badges" data-tip="Medals, rosettes, seals and stamps">🏅 Badges & Seals</button>
-      <button class="menu-btn" data-modal="modal-downloads" data-tip="Download as JPG or PDF">📥 Export Center</button>
+      <button class="menu-btn active" data-modal="modal-personal" data-tip="Edit the recipient, title and description"><i class="ph ph-user"></i> Personal Custom Certificate</button>
+      <button class="menu-btn" data-modal="modal-enterprise" data-tip="Import names from CSV / Excel and export them all"><i class="ph ph-files"></i> Auto-Batch Bulk Certificates</button>
+      <button class="menu-btn" data-modal="modal-templates" data-tip="30 ready-made designs, one click to apply"><i class="ph ph-palette"></i> Preset Themes & Borders</button>
+      <button class="menu-btn" data-modal="modal-custom" data-tip="Use your own background image and logo"><i class="ph ph-upload-simple"></i> Custom Template & Overlay</button>
+      <button class="menu-btn" data-modal="modal-fonts" data-tip="Fonts, size, colour and case for any text"><i class="ph ph-text-aa"></i> Section Typography Studio</button>
+      <button class="menu-btn" data-modal="modal-authorities" data-tip="Up to 4 signatures with names and designations"><i class="ph ph-signature"></i> Authorities & Signatures</button>
+      <button class="menu-btn" data-modal="modal-borders" data-tip="15 border line styles with your own colour and thickness"><i class="ph ph-frame-corners"></i> Border Lines</button>
+      <button class="menu-btn" data-modal="modal-layers" data-tip="Show, hide, lock and reorder every element"><i class="ph ph-stack"></i> Layers</button>
+      <button class="menu-btn" data-modal="modal-badges" data-tip="Medals, rosettes, seals and stamps"><i class="ph ph-medal"></i> Badges & Seals</button>
+      <button class="menu-btn" data-modal="modal-downloads" data-tip="Download as JPG or PDF"><i class="ph ph-download-simple"></i> Export Center</button>
     </aside>
 
     <!-- Canvas Preview Stage -->
@@ -71,11 +71,11 @@
             <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <span class="sep"></span>
-          <div class="seg small"><button class="seg-btn" data-orient="l" data-tip="Landscape certificate">▭ Landscape</button><button class="seg-btn" data-orient="p" data-tip="A4 portrait certificate">▯ A4</button></div>
-          <button id="alignBtn" class="glass-btn small glow-blue" data-tip="Snap every element back to its original position">🧲 Auto Align</button>
-          <button id="addTextBtn" class="glass-btn small glow-green" data-tip="Add a new text box and type anything">🔤 Text Box</button>
-          <button id="idBtn" class="glass-btn small glow-yellow" data-tip="Show or hide the certificate ID">🔖 Cert ID</button>
-          <button id="clearTemplateBtn" class="glass-btn small glow-red" data-tip="Remove the template background and restore the default">🗑️ Delete Template BG</button>
+          <div class="seg small"><button class="seg-btn" data-orient="l" data-tip="Landscape certificate"><i class="ph ph-rectangle"></i> Landscape</button><button class="seg-btn" data-orient="p" data-tip="A4 portrait certificate"><i class="ph ph-rectangle ph-rot"></i> A4</button></div>
+          <button id="alignBtn" class="glass-btn small glow-blue" data-tip="Snap every element back to its original position"><i class="ph ph-align-center-horizontal"></i> Auto Align</button>
+          <button id="addTextBtn" class="glass-btn small glow-green" data-tip="Add a new text box and type anything"><i class="ph ph-text-t"></i> Text Box</button>
+          <button id="idBtn" class="glass-btn small glow-yellow" data-tip="Show or hide the certificate ID"><i class="ph ph-identification-card"></i> Cert ID</button>
+          <button id="clearTemplateBtn" class="glass-btn small glow-red" data-tip="Remove the template background and restore the default"><i class="ph ph-trash"></i> Delete Template BG</button>
         </div>
       </div>
       <div class="hint-row">
@@ -83,9 +83,9 @@
       </div>
       <div id="alignBar" class="alignbar" hidden>
         <span>Align</span>
-        <button class="chip" data-al="l">⇤ Left</button><button class="chip" data-al="c">↔ Center</button><button class="chip" data-al="r">Right ⇥</button>
-        <button class="chip" data-al="t">⤒ Top</button><button class="chip" data-al="m">↕ Middle</button><button class="chip" data-al="b">Bottom ⤓</button>
-        <button class="chip" data-al="dh">Space ↔</button><button class="chip" data-al="dv">Space ↕</button>
+        <button class="chip" data-al="l"><i class="ph ph-align-left"></i> Left</button><button class="chip" data-al="c"><i class="ph ph-align-center-horizontal"></i> Center</button><button class="chip" data-al="r"><i class="ph ph-align-right"></i> Right</button>
+        <button class="chip" data-al="t"><i class="ph ph-align-top"></i> Top</button><button class="chip" data-al="m"><i class="ph ph-align-center-vertical"></i> Middle</button><button class="chip" data-al="b"><i class="ph ph-align-bottom"></i> Bottom</button>
+        <button class="chip" data-al="dh"><i class="ph ph-arrows-out-line-horizontal"></i> Space</button><button class="chip" data-al="dv"><i class="ph ph-arrows-out-line-vertical"></i> Space</button>
       </div>
 
       <div class="canvas-viewport">
@@ -112,8 +112,8 @@
       <div id="cImgColF" hidden><label>Colour</label><input type="color" id="cImgCol" class="glass-input color-picker" /></div>
     </div>
     <div class="button-row">
-      <button id="cReset" class="glass-btn small glow-blue flex-1">🧲 Reset position</button>
-      <button id="cDel" class="glass-btn small glow-red flex-1">🗑️ Remove</button>
+      <button id="cReset" class="glass-btn small glow-blue flex-1"><i class="ph ph-arrow-counter-clockwise"></i> Reset position</button>
+      <button id="cDel" class="glass-btn small glow-red flex-1"><i class="ph ph-trash"></i> Remove</button>
     </div>
   </aside>
 
@@ -127,7 +127,7 @@
       <div class="field"><label>Certificate Header Title</label><input type="text" id="personalTitleInput" class="glass-input" /></div>
       <div class="field"><label>Presentation Line Text</label><input type="text" id="personalLeadInput" class="glass-input" /></div>
       <div class="field"><label>Course / Event Description</label><textarea id="personalSubtitleInput" class="glass-input" rows="3"></textarea></div>
-      <button id="applyPersonalBtn" class="glass-btn glow-green full-width">🚀 Apply & Add to Recipients</button>
+      <button id="applyPersonalBtn" class="glass-btn glow-green full-width"><i class="ph ph-check"></i> Apply & Add to Recipients</button>
     </div>
   </div>
 
@@ -139,16 +139,17 @@
         <label>Import Recipients List (.csv or .xlsx)</label>
         <input type="file" id="csvInput" accept=".csv,.xlsx,.xls" class="glass-input" />
       </div>
-      <button id="loadCsvBtn" class="glass-btn glow-blue full-width">📥 Parse Names & Columns</button>
-      <button id="sampleCsvBtn" class="glass-btn small full-width">⬇ Download sample CSV (Name, Course, Date, Rank)</button>
+      <button id="loadCsvBtn" class="glass-btn glow-blue full-width"><i class="ph ph-table"></i> Parse Names & Columns</button>
+      <button id="sampleCsvBtn" class="glass-btn small full-width"><i class="ph ph-file-csv"></i> Download sample CSV (Name, Course, Date, Rank)</button>
       <div class="field"><label>Placeholders — click to insert into the selected text</label><div id="colChips" class="chips"></div></div>
       <p class="note">Every other column in your file becomes a placeholder like {{Course}}, filled differently for each certificate.</p>
       <hr class="divider" />
       <div class="field">
         <label>Batch Auto-Generation</label>
-        <button id="enterpriseBatchPdfBtn" class="glass-btn glow-green full-width">⚡ Generate All → One Combined PDF</button>
-        <button id="enterpriseBatchJpgBtn" class="glass-btn glow-yellow full-width">🖼️ Generate All → Separate JPG Files</button>
+        <button id="enterpriseBatchPdfBtn" class="glass-btn glow-green full-width"><i class="ph ph-file-pdf"></i> Generate All → One Combined PDF</button>
+        <button id="enterpriseBatchJpgBtn" class="glass-btn glow-yellow full-width"><i class="ph ph-file-jpg"></i> Generate All → Separate JPG Files</button>
       </div>
+      <p class="privacy"><i class="ph ph-lock-simple"></i><span>Privacy: everything runs in your browser. Your files and names are never uploaded.</span></p>
     </div>
   </div>
 
@@ -156,16 +157,16 @@
   <div id="modal-templates" class="glass-modal">
     <div class="modal-content glass-card large-modal">
       <div class="modal-header"><h3>Preset Themes — 30 Landscape + 30 A4 Portrait</h3><button class="close-modal">&times;</button></div>
-      <div class="seg"><button class="seg-btn" data-orient="l">▭ Landscape · 30</button><button class="seg-btn" data-orient="p">▯ A4 Portrait · 30</button></div>
+      <div class="seg"><button class="seg-btn" data-orient="l"><i class="ph ph-rectangle"></i> Landscape · 30</button><button class="seg-btn" data-orient="p"><i class="ph ph-rectangle ph-rot"></i> A4 Portrait · 30</button></div>
       <div class="field-row tint">
         <div class="field"><label>Primary colour</label><input type="color" id="tintP" class="glass-input color-picker" value="#800020" /></div>
         <div class="field"><label>Accent colour</label><input type="color" id="tintS" class="glass-input color-picker" value="#d4af37" /></div>
-        <button id="tintReset" class="glass-btn small glow-yellow">↺ Reset</button>
+        <button id="tintReset" class="glass-btn small glow-yellow"><i class="ph ph-arrow-counter-clockwise"></i> Reset</button>
       </div>
       <div class="template-grid" id="templateGrid"></div>
       <div class="button-row">
-        <button id="shuffleBtn" class="glass-btn glow-blue flex-1">🎲 Surprise Me</button>
-        <button id="removePresetBgBtn" class="glass-btn glow-red flex-1">🗑️ Delete Current Template Background</button>
+        <button id="shuffleBtn" class="glass-btn glow-blue flex-1"><i class="ph ph-shuffle"></i> Surprise Me</button>
+        <button id="removePresetBgBtn" class="glass-btn glow-red flex-1"><i class="ph ph-trash"></i> Delete Current Template Background</button>
       </div>
     </div>
   </div>
@@ -175,11 +176,12 @@
     <div class="modal-content glass-card">
       <div class="modal-header"><h3>Upload Custom Template & Overlay Logo</h3><button class="close-modal">&times;</button></div>
       <div class="field"><label>Upload Custom Template (landscape or A4 portrait — detected automatically)</label><input type="file" id="templateInput" accept="image/*" class="glass-input" /></div>
-      <button id="uploadTemplateBtn" class="glass-btn glow-blue full-width">🖼️ Apply Custom Background</button>
+      <button id="uploadTemplateBtn" class="glass-btn glow-blue full-width"><i class="ph ph-image"></i> Apply Custom Background</button>
       <hr class="divider" />
       <div class="field"><label>Add a logo / image</label><input type="file" id="logoInput" accept="image/*" class="glass-input" /></div>
-      <button id="applyLogoBtn" class="glass-btn glow-green full-width">🖼️ Choose Image</button>
+      <button id="applyLogoBtn" class="glass-btn glow-green full-width"><i class="ph ph-image"></i> Choose Image</button>
       <p class="note">It appears on the certificate at a good size straight away. Drag the corner handles to make it bigger or smaller, and drag the image to move it.</p>
+      <p class="privacy"><i class="ph ph-lock-simple"></i><span>Privacy: everything runs in your browser. Your files and names are never uploaded.</span></p>
     </div>
   </div>
 
@@ -198,11 +200,11 @@
     <div class="modal-content glass-card">
       <div class="modal-header"><h3>Authorities & Signatures (Up to 4)</h3><button class="close-modal">&times;</button></div>
       <div class="button-row">
-        <button id="addAuthBtn" class="glass-btn glow-green flex-1">➕ Add Authority Slot</button>
-        <button id="removeAuthBtn" class="glass-btn glow-red flex-1">➖ Delete Last Authority Slot</button>
+        <button id="addAuthBtn" class="glass-btn glow-green flex-1"><i class="ph ph-plus"></i> Add Authority Slot</button>
+        <button id="removeAuthBtn" class="glass-btn glow-red flex-1"><i class="ph ph-minus"></i> Delete Last Authority Slot</button>
       </div>
       <div id="authoritiesContainer"></div>
-      <button id="applyAuthoritiesBtn" class="glass-btn glow-green full-width">🚀 Update All Signatures & Authorities</button>
+      <button id="applyAuthoritiesBtn" class="glass-btn glow-green full-width"><i class="ph ph-check"></i> Update All Signatures & Authorities</button>
     </div>
   </div>
 
@@ -224,11 +226,12 @@
       <hr class="divider" />
       <div class="download-section">
         <h4>Batch Bulk Downloads</h4>
-        <button id="downloadBatchJpgBtn" class="glass-btn glow-green full-width">🖼️ All as Separate JPG Files</button>
-        <button id="downloadBatchPdfBtn" class="glass-btn glow-red full-width">📄 All as Separate PDF Files</button>
-        <button id="downloadBatchCombinedBtn" class="glass-btn glow-yellow full-width">📚 All in ONE Combined PDF</button>
+        <button id="downloadBatchJpgBtn" class="glass-btn glow-green full-width"><i class="ph ph-file-jpg"></i> All as Separate JPG Files</button>
+        <button id="downloadBatchPdfBtn" class="glass-btn glow-red full-width"><i class="ph ph-file-pdf"></i> All as Separate PDF Files</button>
+        <button id="downloadBatchCombinedBtn" class="glass-btn glow-yellow full-width"><i class="ph ph-files"></i> All in ONE Combined PDF</button>
         <p class="note">Your browser may ask to allow multiple downloads — choose Allow.</p>
       </div>
+      <p class="privacy"><i class="ph ph-lock-simple"></i><span>Privacy: everything runs in your browser. Your files and names are never uploaded.</span></p>
     </div>
   </div>
 
@@ -236,7 +239,7 @@
   <div id="modal-layers" class="glass-modal">
     <div class="modal-content glass-card">
       <div class="modal-header"><h3>Layers</h3><button class="close-modal">&times;</button></div>
-      <p class="note">Top of the list is drawn on top. 👁 hide · 🔒 lock · ▲▼ reorder. Shift-click names to multi-select.</p>
+      <p class="note">Top of the list is drawn on top. <i class="ph ph-eye"></i> hide · <i class="ph ph-lock-simple"></i> lock · <i class="ph ph-caret-up"></i><i class="ph ph-caret-down"></i> reorder. Shift-click names to multi-select.</p>
       <div id="layersList"></div>
     </div>
   </div>
@@ -256,7 +259,7 @@
       <div class="field-row tint">
         <div class="field"><label>Line colour</label><input type="color" id="bdCol" class="glass-input color-picker" value="#800020" /></div>
         <div class="field"><label>Thickness</label><input type="range" id="bdW" min="1" max="12" value="3" /></div>
-        <button id="bdNone" class="glass-btn small glow-red">✕ None</button>
+        <button id="bdNone" class="glass-btn small glow-red"><i class="ph ph-x"></i> None</button>
       </div>
       <div class="template-grid" id="borderGrid"></div>
       <p class="note">Borders sit on top of any template, including ones you upload.</p>
