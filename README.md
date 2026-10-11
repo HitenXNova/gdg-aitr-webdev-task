@@ -17,14 +17,14 @@ The complete review, feedback, and feature suggestions for https://gdgocaitr.ver
 - **Export Options:** Download individual or batch certificates.
 
 ### Tech Stack
--HTML5
--CSS3
--Vanilla JavaScript
--Canvas 2D API
--PapaParse ( read CSV files )
--SheetJS ( xlsx )
--jsPDF ( PDF Export )
--Google Fonts
--Phosphor Icons
+- HTML5
+- CSS3
+- vanilla JavaScript
+- jsPDF
+- PapaParse
+- SheetJS (xlsx)
+- Google Fonts
+- Phosphor Icons
+
 
 
