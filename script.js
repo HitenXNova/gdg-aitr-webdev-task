@@ -71,7 +71,7 @@ const BR = {
   Zigzag: c => along(30, 16, (x, y, v) => { c.beginPath(); if (v) { c.moveTo(x - 4, y - 6); c.lineTo(x + 4, y); c.lineTo(x - 4, y + 6); } else { c.moveTo(x - 6, y - 4); c.lineTo(x, y + 4); c.lineTo(x + 6, y - 4); } c.stroke(); }),
   Diamonds: c => { along(30, 26, (x, y) => { c.beginPath(); c.moveTo(x, y - 7); c.lineTo(x + 7, y); c.lineTo(x, y + 7); c.lineTo(x - 7, y); c.closePath(); c.fill(); }); c.lineWidth = 1.5; c.strokeRect(48, 48, W - 96, H - 96); },
   Film: c => { along(26, 20, (x, y) => c.fillRect(x - 4, y - 4, 8, 8)); c.lineWidth = 1.5; c.strokeRect(44, 44, W - 88, H - 88); },
-  Sparkle: c => along(30, 34, (x, y) => { c.beginPath(); c.moveTo(x, y - 9); c.quadraticCurveTo(x, y, x + 9, y); c.quadraticCurveTo(x, y, x, y + 9); c.quadraticCurveTo(x, y, x - 9, y); c.quadraticCurveTo(x, y, x, y - 9); c.fill(); })
+  Stars: c => along(30, 34, (x, y) => { c.beginPath(); c.moveTo(x, y - 9); c.quadraticCurveTo(x, y, x + 9, y); c.quadraticCurveTo(x, y, x, y + 9); c.quadraticCurveTo(x, y, x - 9, y); c.quadraticCurveTo(x, y, x, y - 9); c.fill(); })
 };
 function drawBorder(c, b) { c.save(); c.strokeStyle = c.fillStyle = b.col; c.lineWidth = b.w; c.lineJoin = 'round'; (BR[b.style] || BR.Line)(c, b.w); c.restore(); }
 
@@ -79,14 +79,14 @@ function drawBorder(c, b) { c.save(); c.strokeStyle = c.fillStyle = b.col; c.lin
 let uid = 0, selId = null, showId = true, G = {}, drag = null, inl = null;
 const multi = new Set();   // extra selected ids (shift-click); selId is the primary
 let DATA = {};              // recipient name -> row of imported columns (lower-case keys)
-let list = ["M. S. Dhoni", "Cristiano Ronaldo", "Lewis Hamilton"];
+let list = ["Lewis Hamilton", "J. K. Rowling", "Peter Parker"];
 const T = (role, text, x, y, font, size, color, extra = {}) => ({ id: ++uid, k: 't', role, text, x, y, ox: x, oy: y, font, size, color, cs: 'original', ...extra });
 function authSet(g, x, n, d) { return [T('authName', n, x, fy('authName'), 'Montserrat', 16, '#202124', { grp: g }), T('authDesig', d, x, fy('authDesig'), 'Inter', 13, '#5f6368', { grp: g })]; }
 let S = {
   tpl: 0, bg: null, border: null, w: 1000, h: 700, items: [
     T('title', 'CERTIFICATE OF ACHIEVEMENT', W / 2, fy('title'), 'Cinzel Decorative', 36, '#800020', { cs: 'upper' }),
     T('lead', 'THIS IS PROUDLY PRESENTED TO', W / 2, fy('lead'), 'Poppins', 15, '#333333', { cs: 'upper' }),
-    T('name', 'M. S. Dhoni', W / 2, fy('name'), 'Great Vibes', 62, '#111111'),
+    T('name', 'Lewis Hamilton', W / 2, fy('name'), 'Great Vibes', 62, '#111111'),
     T('subtitle', 'for outstanding performance, leadership, and dedicated service.', W / 2, fy('subtitle'), 'Lora', 18, '#3c4043'),
     ...authSet(1, 333, 'Dr. Robert Vance', 'Director of Education'), ...authSet(2, 667, 'Elena Rostova', 'Head of Operations')
   ]
@@ -267,7 +267,7 @@ const typoHTML = p => `
   <div class="field"><label>Style & Effects</label>
     <div class="btn-group">
       <button class="glass-btn small tg" data-tg="bold"><b>B</b></button><button class="glass-btn small tg" data-tg="ital"><i>I</i></button>
-      <button class="glass-btn small tg" data-tg="shadow">Shadow</button><button class="glass-btn small tg" data-tg="foil">🥇 Foil</button>
+      <button class="glass-btn small tg" data-tg="shadow">Shadow</button><button class="glass-btn small tg" data-tg="foil"><i class="ph ph-star"></i> Foil</button>
     </div>
   </div>
   <div class="field"><label>Letter Spacing</label><input type="range" id="${p}Ls" min="-2" max="20" step=".5" /></div>
@@ -387,7 +387,7 @@ canvas.addEventListener('pointermove', e => {
   }
   const x = onX(p), hd = handleAt(p), h = x ? sel() : hd ? sel() : hit(p);
   canvas.style.cursor = x ? 'pointer' : hd ? (hd === 'bl' ? 'nesw-resize' : 'nwse-resize') : h ? (h.lock ? 'not-allowed' : 'move') : 'default';
-  showTip(e, h ? (x ? '✕ Click to remove this field' : hd ? '↔ Drag to resize' : h.lock ? `${label(h)} — 🔒 locked (unlock it in Layers)` : `${label(h)} — click to select, drag to move${h.k === 't' ? ', double-click to type' : ''}`) : null);
+  showTip(e, h ? (x ? 'Click to remove this field' : hd ? 'Drag to resize' : h.lock ? `${label(h)} — locked (unlock it in Layers)` : `${label(h)} — click to select, drag to move${h.k === 't' ? ', double-click to type' : ''}`) : null);
 });
 const endDrag = () => { if ((drag && drag.moved) || rs) commit(); drag = null; rs = null; G = {}; render(); };
 canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
@@ -573,7 +573,7 @@ $('loadCsvBtn').onclick = async () => {
   } catch (err) { say('Could not read that file — try .csv or .xlsx', 100); }
 };
 $('sampleCsvBtn').onclick = () => {
-  const b = new Blob(['Name,Course,Date,Rank\nAarav Sharma,Web Development,12 March 2026,1st\nIsha Verma,AI/ML Workshop,12 March 2026,2nd\nRohan Mehta,Cloud Study Jam,13 March 2026,Participant\n'], { type: 'text/csv' });
+  const b = new Blob(['Name,Course,Date,Rank\nAarav Sharma,Web Development,12 March 2026,1st\nIsha Verma,Design Workshop,12 March 2026,2nd\nRohan Mehta,Cloud Study Jam,13 March 2026,Participant\n'], { type: 'text/csv' });
   triggerDownload(URL.createObjectURL(b), 'sample_recipients.csv');
 };
 
@@ -622,10 +622,10 @@ function buildStrip() {
   const box = $('strip'); box.innerHTML = ''; let bad = 0;
   list.forEach(n => {
     const f = nameFit(n), warn = f < .72; if (warn) bad++;
-    const b = document.createElement('button'); b.className = 'chip' + (warn ? ' warn' : ''); b.dataset.n = n; b.textContent = (warn ? '⚠ ' : '') + n;
+    const b = document.createElement('button'); b.className = 'chip' + (warn ? ' warn' : ''); b.dataset.n = n; if (warn) { const w = document.createElement('i'); w.className = 'ph ph-warning'; b.append(w, ' '); } b.append(n);
     b.title = warn ? `Long name — shrinks to ${Math.round(f * 100)}% to fit` : 'Preview this recipient'; b.onclick = () => { setName(n); commitSoon(); }; box.appendChild(b);
   });
-  $('stripInfo').textContent = `${list.length} recipient${list.length === 1 ? '' : 's'}` + (bad ? ` · ⚠ ${bad} long name${bad > 1 ? 's' : ''}` : ''); markStrip();
+  $('stripInfo').innerHTML = `${list.length} recipient${list.length === 1 ? '' : 's'}` + (bad ? ` · <i class="ph ph-warning"></i> ${bad} long name${bad > 1 ? 's' : ''}` : ''); markStrip();
 }
 function markStrip() { document.querySelectorAll('#strip .chip').forEach(c => { const on = c.dataset.n === nameText(); c.classList.toggle('on', on); if (on && c.scrollIntoView) c.scrollIntoView({ block: 'nearest', inline: 'center' }); }); }
 
@@ -634,7 +634,7 @@ function buildLayers() {
   const box = $('layersList'); if (!box) return; box.innerHTML = '';
   [...S.items].reverse().forEach(it => {
     const r = document.createElement('div'); r.className = 'lrow'; r.dataset.id = it.id;
-    r.innerHTML = `<button data-a="hide" title="Show / hide">${it.hide ? '🚫' : '👁'}</button><button data-a="lock" title="Lock / unlock">${it.lock ? '🔒' : '🔓'}</button><span class="ln"></span><button data-a="up" title="Bring forward">▲</button><button data-a="down" title="Send backward">▼</button><button data-a="del" title="Delete">✕</button>`;
+    r.innerHTML = `<button data-a="hide" title="Show / hide"><i class="ph ph-${it.hide ? 'eye-slash' : 'eye'}"></i></button><button data-a="lock" title="Lock / unlock"><i class="ph ph-${it.lock ? 'lock-simple' : 'lock-simple-open'}"></i></button><span class="ln"></span><button data-a="up" title="Bring forward"><i class="ph ph-caret-up"></i></button><button data-a="down" title="Send backward"><i class="ph ph-caret-down"></i></button><button data-a="del" title="Delete"><i class="ph ph-x"></i></button>`;
     const ln = r.querySelector('.ln'); ln.textContent = label(it); ln.onclick = e => pick(it.id, e.shiftKey);
     r.querySelectorAll('button').forEach(b => b.onclick = () => layerAct(it, b.dataset.a)); box.appendChild(r);
   });
@@ -728,7 +728,7 @@ function confetti() {
     if (++f < 110) requestAnimationFrame(tick); else c.remove();
   })();
 }
-$('themeToggle').onclick = () => { const l = document.body.classList.toggle('light-mode'); $('themeToggle').textContent = l ? '☀️ Light' : '🌙 Dark'; };
+$('themeToggle').onclick = () => { const l = document.body.classList.toggle('light-mode'); $('themeToggle').innerHTML = l ? '<i class="ph ph-sun"></i> Light' : '<i class="ph ph-moon"></i> Dark'; };
 function duplicate() {
   const src = selAll(); if (!src.length) return; multi.clear();
   const cp = src.map(it => { const c = JSON.parse(JSON.stringify(it, (k, v) => k[0] === '_' ? undefined : v)); c.id = ++uid; c.x += 20; c.y += 20; c.ox = c.x; c.oy = c.y; c.lock = false; return c; });
@@ -754,5 +754,10 @@ addEventListener('resize', () => { if (zoom) $('zoomLbl').textContent = Math.rou
   gallery(); borderGallery(); badgeGallery(); updateRecipientDropdown(); buildChips();
   try { const raw = localStorage.getItem(KEY); if (raw) { await unpack(JSON.parse(raw)); say('Restored your last session', 100); } else { commit(); refreshAll(); } }
   catch (e) { commit(); refreshAll(); }
+  const OLD = ["M. S. Dhoni", "Cristiano Ronaldo", "Lewis Hamilton"];   // previous default names -> new defaults
+  if (list.length === 3 && OLD.every((n, i) => list[i] === n)) {
+    list = ["Lewis Hamilton", "J. K. Rowling", "Peter Parker"]; const nm = byRole('name'); if (nm && OLD.includes(nm.text)) nm.text = list[0];
+    updateRecipientDropdown(); refreshAll(); commit();
+  }
   setZoom(null); document.fonts.ready.then(() => { render(); buildStrip(); });
 })();
